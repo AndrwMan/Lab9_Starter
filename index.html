@@ -51,7 +51,7 @@
 
 <body>
   <main>
-    <form>
+    <form id="calcForm">
       <fieldset>
         <legend>Error Calculator</legend>
         <input name="first-num" id="first-num" />
@@ -87,14 +87,26 @@
     </section>
   </main>
 
+<script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
+<script>
+  window.TrackJS && TrackJS.install({ 
+    token: "0af97e55b8054ed0be904b3f46781c17"
+    // for more configuration options, see https://docs.trackjs.com
+  });
+</script>
+
   <script>
+	let output;
+	let firstNum;
+	let secondNum;
+	let operator;
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
+      output = document.querySelector('output');
+      firstNum = document.querySelector('#first-num').value;
+      secondNum = document.querySelector('#second-num').value;
+      operator = document.querySelector('#operator').value;
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
 
@@ -102,6 +114,121 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+	let logBtn = document.querySelector('#error-btns > button:nth-of-type(1)');
+	logBtn.addEventListener("click", () => { console.log(output.innerHTML); } );
+
+	let errorBtn = document.querySelector('#error-btns > button:nth-of-type(2)');
+	errorBtn.addEventListener("click", tryCalc);
+
+	function tryCalc() {
+		try {
+			output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+		}
+		catch(error) {
+			console.log(error);
+		}
+	}
+
+	let countBtn = document.querySelector('#error-btns > button:nth-of-type(3)');
+	countBtn.addEventListener("click", function () {console.count("currCount")});
+
+	let warnBtn = document.querySelector('#error-btns > button:nth-of-type(4)');
+	warnBtn.addEventListener("click", checkType );
+
+	function checkType() {
+		let currfirstNum = document.querySelector('#first-num').value;
+		if( currfirstNum.length <= 0) { console.warn("first field is empty");}
+	}
+
+	let assertBtn = document.querySelector('#error-btns > button:nth-of-type(5)');
+	assertBtn.addEventListener("click", tryIs4 );
+
+	// Custom Error
+	class InputError extends Error {
+		constructor(message) {
+			super('Custom error: '  + message); 
+			this.name = "inputError";
+		}
+	}
+
+	function is4() {
+		firstNum = document.querySelector('#first-num').value;
+      	secondNum = document.querySelector('#second-num').value;
+		operator = document.querySelector('#operator').value;
+		console.log(firstNum)
+		if( firstNum.length <= 0 ) { throw new InputError('first field is empty'); }
+		let result  = eval(`${firstNum} ${operator} ${secondNum}`)
+		console.assert(result == 4, 'sum is not 4')   
+	}
+
+	function tryIs4() {
+		try {
+			is4();
+		} 
+		catch(error) {
+			console.log(error.name);
+			console.log(error.message);
+		} 
+		finally {
+			console.log('operands were ' + firstNum + ' ' + secondNum)
+		}
+	}
+
+	let clearBtn = document.querySelector('#error-btns > button:nth-of-type(7)');
+	clearBtn.addEventListener("click", () => { console.clear() } );
+
+	let dirBtn = document.querySelector('#error-btns > button:nth-of-type(7)');
+	dirBtn.addEventListener("click", () => { console.dir(document) } );
+
+	let dirXmlBtn = document.querySelector('#error-btns > button:nth-of-type(8)');
+	dirXmlBtn.addEventListener("click", () => { console.dirxml(document) } );
+
+	let groupStartBtn = document.querySelector('#error-btns > button:nth-of-type(9)');
+	groupStartBtn.addEventListener("click", () => { 
+		console.group()
+		console.log('+1 lvl') 
+	} );
+	let groupEndBtn = document.querySelector('#error-btns > button:nth-of-type(10)');
+	groupEndBtn.addEventListener("click", () => { 
+		console.groupEnd();
+		console.log('-1 lvl') 
+	} );
+
+	let tableBtn = document.querySelector('#error-btns > button:nth-of-type(11)');
+	tableBtn.addEventListener("click", () => { console.table([1, 2, 3]); } )
+	
+	let timeStartBtn = document.querySelector('#error-btns > button:nth-of-type(12)');
+	timeStartBtn.addEventListener("click", () => { 
+		 console.time();
+		 alert("Timer started (in ms), stop with End Timer Button");
+	} )
+	let timeEndBtn = document.querySelector('#error-btns > button:nth-of-type(13)');
+	timeEndBtn.addEventListener("click", () => { console.timeEnd(); } )
+
+	let traceBtn = document.querySelector('#error-btns > button:nth-of-type(14)');
+	traceBtn.addEventListener("click", firstFunction )
+
+	function firstFunction() {
+		nextFunction();
+	}
+	function nextFunction() {
+		siblingFunction()
+		lastFunction()
+	}
+	function lastFunction() {
+		console.trace();
+	}
+	function siblingFunction() {
+		console.trace();
+	}
+
+	//let globalErrBtn = document.querySelector('#error-btns > button:nth-of-type(15)');
+	//globalErrBtn.addEventListener("click",  )
+
+	window.addEventListener("error", (event) => {
+  	console.log(event);
+	});
+
   </script>
 </body>
 
