@@ -222,8 +222,8 @@
 		console.trace();
 	}
 
-	//let globalErrBtn = document.querySelector('#error-btns > button:nth-of-type(15)');
-	//globalErrBtn.addEventListener("click",  )
+	let globalErrBtn = document.querySelector('#error-btns > button:nth-of-type(15)');
+	globalErrBtn.addEventListener("click", () => { console.log(undefinedVar); } )
 
 	window.addEventListener("error", (event) => {
   	console.log(event);
